@@ -16,7 +16,7 @@ public class LeagueData {
     public static List<Equipo> getLaLiga20() {
         List<Equipo> lista = new ArrayList<>();
 
-        // Budgets más realistas (en euros)
+        
         lista.add(createEquipo("Real Madrid", "Madrid", "Santiago Bernabéu", "4-3-3", 5.0, 1_000_000_000));
         lista.add(createEquipo("FC Barcelona", "Barcelona", "Camp Nou", "4-3-3", 4.9, 950_000_000));
         lista.add(createEquipo("Atlético de Madrid", "Madrid", "Cívitas Metropolitano", "4-4-2", 4.6, 600_000_000));
@@ -38,7 +38,7 @@ public class LeagueData {
         lista.add(createEquipo("RCD Espanyol", "Barcelona", "RCDE Stadium", "4-3-3", 3.2, 75_000_000));
         lista.add(createEquipo("Girona FC", "Girona", "Montilivi", "4-3-3", 3.4, 100_000_000));
 
-        // generar once titular (nombres simples) y valoraciones relativas (60..99)
+        
         for (Equipo e : lista) {
             List<Jugador> once = new ArrayList<>();
             once.add(new Jugador(randomNombre(), "POR", randomEdad(24,34), randomValor(e.getValoracion())));
@@ -56,7 +56,7 @@ public class LeagueData {
 
     private static int randomEdad(int a, int b) { return a + RNG.nextInt(b - a + 1); }
 
-    // mapea teamVal (~0..5) a base de jugador (~76..84) y añade variación para 60..99
+    
     private static int playerBaseFromTeamVal(double teamVal) {
         double base = 3.63636 * teamVal + 65.8182;
         return (int) Math.round(base);
@@ -64,7 +64,7 @@ public class LeagueData {
 
     private static int randomValor(double teamVal) {
         int base = playerBaseFromTeamVal(teamVal);
-        int variation = RNG.nextInt(13) - 6; // -6..+6
+        int variation = RNG.nextInt(13) - 6; 
         int val = base + variation;
         if (val < 60) val = 60;
         if (val > 99) val = 99;

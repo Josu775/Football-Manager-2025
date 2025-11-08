@@ -102,7 +102,7 @@ public class MarketWindow extends JFrame {
         };
 
         for (int i = 0; i < n; i++) {
-            String name = names[RNG.nextInt(names.length)]; // quitamos los números
+            String name = names[RNG.nextInt(names.length)]; 
             String origen = (RNG.nextDouble() < 0.6)
                     ? laLiga[RNG.nextInt(laLiga.length)]
                     : foreignClubs[RNG.nextInt(foreignClubs.length)];

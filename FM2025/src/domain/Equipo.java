@@ -8,8 +8,8 @@ public class Equipo {
     private String ciudad;
     private String estadio;
     private String formacion;
-    private double valoracion; // 0..5
-    private double budget; // presupuesto para fichajes
+    private double valoracion; 
+    private double budget; 
     private List<Jugador> onceTitular = new ArrayList<>();
 
     public Equipo(String nombre, String ciudad, String estadio, String formacion, double valoracion, double budget) {

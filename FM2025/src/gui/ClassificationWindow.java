@@ -22,7 +22,7 @@ public class ClassificationWindow extends JFrame {
     private void init() {
         List<Equipo> equipos = LeagueData.getLaLiga20();
 
-        // Orden por valoración descendente (proxy)
+        
         equipos.sort(Comparator.comparingDouble(Equipo::getValoracion).reversed());
 
         String[] cols = {"Pos", "Equipo", "Puntos", "GF", "PJ"};
@@ -31,7 +31,7 @@ public class ClassificationWindow extends JFrame {
         };
         int pos = 1;
         for (Equipo e : equipos) {
-            model.addRow(new Object[]{pos++, e.getNombre(), 0, 0, 0}); // PJ = 0, Pts=0, GF=0
+            model.addRow(new Object[]{pos++, e.getNombre(), 0, 0, 0}); 
         }
 
         JTable table = new JTable(model);

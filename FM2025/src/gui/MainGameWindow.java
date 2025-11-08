@@ -91,7 +91,7 @@ public class MainGameWindow extends JFrame {
         btnClasificacion.addActionListener(e -> new ClassificationWindow(this));
         btnMercado.addActionListener(e -> {
             MarketWindow mw = new MarketWindow(this, equipo);
-            // al cerrar podríamos refrescar budget y media
+            
             mw.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override public void windowClosed(java.awt.event.WindowEvent e) {
                     lblBudget.setText("Presupuesto: " + LeagueData.formatMoney(equipo.getBudget()));
