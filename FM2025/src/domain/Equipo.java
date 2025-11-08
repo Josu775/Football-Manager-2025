@@ -7,7 +7,7 @@ public class Equipo {
     private String nombre;
     private String ciudad;
     private String estadio;
-    private String formacion; // e.g. "4-3-3"
+    private String formacion;
     private double valoracion; // 0..5
     private List<Jugador> onceTitular = new ArrayList<>();
 
@@ -23,7 +23,13 @@ public class Equipo {
     public String getCiudad() { return ciudad; }
     public String getEstadio() { return estadio; }
     public String getFormacion() { return formacion; }
+    public void setFormacion(String formacion) { this.formacion = formacion; }
     public double getValoracion() { return valoracion; }
+
+    public void setValoracion(double valoracion) {
+        this.valoracion = Math.round(Math.max(1.0, Math.min(5.0, valoracion)) * 10.0) / 10.0;
+    }
+
     public List<Jugador> getOnceTitular() { return onceTitular; }
 
     public void setOnceTitular(List<Jugador> once) {
