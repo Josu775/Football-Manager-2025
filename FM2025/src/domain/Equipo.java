@@ -4,27 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Equipo {
-    private int id;
     private String nombre;
     private String ciudad;
-    private List<Jugador> plantilla = new ArrayList<>();
+    private String estadio;
+    private String formacion; // e.g. "4-3-3"
+    private double valoracion; // 0..5
+    private List<Jugador> onceTitular = new ArrayList<>();
 
-    public Equipo(String nombre, String ciudad) {
+    public Equipo(String nombre, String ciudad, String estadio, String formacion, double valoracion) {
         this.nombre = nombre;
         this.ciudad = ciudad;
+        this.estadio = estadio;
+        this.formacion = formacion;
+        this.valoracion = valoracion;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
     public String getNombre() { return nombre; }
     public String getCiudad() { return ciudad; }
-    public List<Jugador> getPlantilla() { return plantilla; }
+    public String getEstadio() { return estadio; }
+    public String getFormacion() { return formacion; }
+    public double getValoracion() { return valoracion; }
+    public List<Jugador> getOnceTitular() { return onceTitular; }
 
-    public void addJugador(Jugador j) { plantilla.add(j); }
-    public void removeJugador(Jugador j) { plantilla.remove(j); }
+    public void setOnceTitular(List<Jugador> once) {
+        this.onceTitular.clear();
+        if (once != null) this.onceTitular.addAll(once);
+    }
 
     @Override
     public String toString() {
-        return nombre + " (" + ciudad + ")";
+        return nombre;
     }
 }

@@ -1,10 +1,10 @@
 package main;
 
 import javax.swing.SwingUtilities;
-import gui.MainWindow;
+import gui.WelcomeWindow;
 
 public class Main {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainWindow());
+        SwingUtilities.invokeLater(() -> new WelcomeWindow());
     }
 }
