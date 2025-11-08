@@ -39,15 +39,15 @@ public class MainGameWindow extends JFrame {
 
         add(top, BorderLayout.NORTH);
 
-        // Tabla once titular
-        String[] cols = {"#", "Nombre", "Posición", "Edad", "Valoración"};
+        // Tabla once titular (sin valoración)
+        String[] cols = {"#", "Nombre", "Posición", "Edad"};
         DefaultTableModel tm = new DefaultTableModel(cols, 0) {
             @Override public boolean isCellEditable(int row, int col) { return false; }
         };
         JTable table = new JTable(tm);
         int idx = 1;
         for (Jugador j : equipo.getOnceTitular()) {
-            tm.addRow(new Object[]{idx++, j.getNombre(), j.getPosicion(), j.getEdad(), String.format("%.1f", j.getValoracion())});
+            tm.addRow(new Object[]{idx++, j.getNombre(), j.getPosicion(), j.getEdad()});
         }
 
         add(new JScrollPane(table), BorderLayout.CENTER);
@@ -60,7 +60,6 @@ public class MainGameWindow extends JFrame {
         add(south, BorderLayout.SOUTH);
 
         btnVolver.addActionListener(e -> {
-            // volver al menú principal: cerramos esta ventana y abrimos bienvenida
             dispose();
             new WelcomeWindow().setVisible(true);
         });

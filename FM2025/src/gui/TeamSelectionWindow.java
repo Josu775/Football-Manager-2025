@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.List;
 
 public class TeamSelectionWindow extends JFrame {
-
+	
     private JList<Equipo> list;
 
     public TeamSelectionWindow(JFrame parent) {
@@ -64,12 +64,14 @@ public class TeamSelectionWindow extends JFrame {
                 sb.append("Once titular:\n");
                 int i=1;
                 for (var j : sel.getOnceTitular()) {
-                    sb.append(i++).append(". ").append(j.getNombre()).append(" - ").append(j.getPosicion())
-                            .append(" (").append(String.format("%.1f", j.getValoracion())).append(")\n");
+                    sb.append(i++).append(". ").append(j.getNombre())
+                      .append(" - ").append(j.getPosicion())
+                      .append(" (").append(j.getEdad()).append(" años)").append("\n");
                 }
                 detalleText.setText(sb.toString());
             } else detalleText.setText("");
         });
+
 
         btnCancelar.addActionListener(e -> {
             // cierre vuelve a ventana bienvenido
