@@ -36,7 +36,7 @@ public class SquadTacticsWindow extends JFrame {
         JTable table = new JTable(model);
         for (int i=0; i<equipo.getOnceTitular().size(); i++) {
             Jugador j = equipo.getOnceTitular().get(i);
-            model.addRow(new Object[]{i+1, j.getNombre(), j.getPosicion(), j.getEdad(), String.format("%.1f", j.getValoracion())});
+            model.addRow(new Object[]{i+1, j.getNombre(), j.getPosicion(), j.getEdad(), j.getValoracion()});
         }
         add(new JScrollPane(table), BorderLayout.CENTER);
 

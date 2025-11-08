@@ -15,19 +15,27 @@ public class WelcomeWindow extends JFrame {
     }
 
     private void initComponents() {
+        // Panel principal con BorderLayout
         JPanel p = new JPanel(new BorderLayout(10,10));
         p.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
+        // Título grande centrado
         JLabel title = new JLabel("Football Manager", SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 20));
+        title.setFont(new Font("Arial", Font.BOLD, 22));
         p.add(title, BorderLayout.NORTH);
 
-        JTextArea info = new JTextArea("Entrena un equipo. Alcanza la gloria");
-        info.setEditable(false);
-        info.setBackground(getBackground());
-        info.setFont(new Font("Arial", Font.PLAIN, 14));
-        p.add(info, BorderLayout.CENTER);
+        // Subtítulo centrado (no seleccionable porque es JLabel).
+        // Uso HTML para controlar salto de línea y centrado.
+        JLabel subtitle = new JLabel("<html><div style='text-align:center;'>Entrena un equipo.<br><b>Alcanza la gloria</b></div></html>", SwingConstants.CENTER);
+        subtitle.setFont(new Font("Arial", Font.PLAIN, 14));
+        subtitle.setHorizontalAlignment(SwingConstants.CENTER);
 
+        // Para centrar verticalmente colocamos el subtitle dentro de un panel con GridBagLayout
+        JPanel center = new JPanel(new GridBagLayout());
+        center.add(subtitle); // GridBagLayout centra por defecto
+        p.add(center, BorderLayout.CENTER);
+
+        // Botones en el sur
         JPanel botones = new JPanel();
         JButton btnNueva = new JButton("Nueva partida");
         JButton btnSalir = new JButton("Salir");

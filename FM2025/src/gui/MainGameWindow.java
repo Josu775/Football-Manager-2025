@@ -2,9 +2,11 @@ package gui;
 
 import domain.GameSession;
 import domain.Equipo;
+import domain.LeagueData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class MainGameWindow extends JFrame {
 
@@ -13,6 +15,8 @@ public class MainGameWindow extends JFrame {
     private JLabel lblTeamName;
     private JLabel lblFormation;
     private JLabel lblRating;
+    private JLabel lblBudget;
+    private JLabel lblAvgRating;
 
     public MainGameWindow(Window parent, GameSession session) {
         super("Partida - " + session.getJugadorEquipo().getNombre());
@@ -42,9 +46,19 @@ public class MainGameWindow extends JFrame {
         leftMenu.add(lblFormation);
         leftMenu.add(Box.createVerticalStrut(5));
 
-        lblRating = new JLabel("Valoración: " + String.format("%.1f / 5", equipo.getValoracion()));
+        lblRating = new JLabel("Valoración equipo: " + String.format("%.1f / 5", equipo.getValoracion()));
         lblRating.setAlignmentX(Component.CENTER_ALIGNMENT);
         leftMenu.add(lblRating);
+        leftMenu.add(Box.createVerticalStrut(5));
+
+        lblAvgRating = new JLabel("Media once: " + calcularMediaOnce(equipo.getOnceTitular()) + " / 99");
+        lblAvgRating.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftMenu.add(lblAvgRating);
+        leftMenu.add(Box.createVerticalStrut(5));
+
+        lblBudget = new JLabel("Presupuesto: " + LeagueData.formatMoney(equipo.getBudget()));
+        lblBudget.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftMenu.add(lblBudget);
         leftMenu.add(Box.createVerticalStrut(15));
 
         JButton btnClasificacion = new JButton("Clasificación");
@@ -66,7 +80,6 @@ public class MainGameWindow extends JFrame {
         updateOverviewText(txtOverview);
         center.add(new JScrollPane(txtOverview), BorderLayout.CENTER);
 
-        // abajo: botón ATRÁS
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton btnAtras = new JButton("Atrás");
         bottom.add(btnAtras);
@@ -76,7 +89,16 @@ public class MainGameWindow extends JFrame {
         add(bottom, BorderLayout.SOUTH);
 
         btnClasificacion.addActionListener(e -> new ClassificationWindow(this));
-        btnMercado.addActionListener(e -> new MarketWindow(this, equipo));
+        btnMercado.addActionListener(e -> {
+            MarketWindow mw = new MarketWindow(this, equipo);
+            // al cerrar podríamos refrescar budget y media
+            mw.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override public void windowClosed(java.awt.event.WindowEvent e) {
+                    lblBudget.setText("Presupuesto: " + LeagueData.formatMoney(equipo.getBudget()));
+                    lblAvgRating.setText("Media once: " + calcularMediaOnce(equipo.getOnceTitular()) + " / 99");
+                }
+            });
+        });
         btnPlantilla.addActionListener(e -> new SquadTacticsWindow(this, equipo));
         btnCalendario.addActionListener(e -> new CalendarWindow(this, equipo));
 
@@ -93,8 +115,16 @@ public class MainGameWindow extends JFrame {
         sb.append("Estadio: ").append(equipo.getEstadio()).append("\n");
         sb.append("Formación: ").append(equipo.getFormacion()).append("\n");
         sb.append("Valoración global: ").append(String.format("%.1f / 5", equipo.getValoracion())).append("\n");
-        sb.append("Presupuesto: €").append(String.format("%.0f", equipo.getBudget())).append("\n\n");
+        sb.append("Media del once: ").append(calcularMediaOnce(equipo.getOnceTitular())).append(" / 99\n");
+        sb.append("Presupuesto: ").append(LeagueData.formatMoney(equipo.getBudget())).append("\n\n");
         sb.append("Usa el menú para ver clasificación, mercado, plantilla/tácticas y calendario.");
         area.setText(sb.toString());
+    }
+
+    private int calcularMediaOnce(java.util.List<domain.Jugador> once) {
+        if (once == null || once.isEmpty()) return 0;
+        int sum = 0;
+        for (domain.Jugador j : once) sum += j.getValoracion();
+        return Math.round((float) sum / once.size());
     }
 }

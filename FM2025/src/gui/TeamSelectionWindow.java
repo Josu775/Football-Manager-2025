@@ -59,12 +59,12 @@ public class TeamSelectionWindow extends JFrame {
                 sb.append("Estadio: ").append(sel.getEstadio()).append("\n");
                 sb.append("Formación: ").append(sel.getFormacion()).append("\n");
                 sb.append("Valoración: ").append(String.format("%.1f / 5.0", sel.getValoracion())).append("\n");
-                sb.append("Presupuesto: €").append(String.format("%.0f", sel.getBudget())).append("\n\n");
+                sb.append("Presupuesto: ").append(LeagueData.formatMoney(sel.getBudget())).append("\n\n");
                 sb.append("Once titular:\n");
                 int i=1;
                 for (var j : sel.getOnceTitular()) {
                     sb.append(i++).append(". ").append(j.getNombre()).append(" - ").append(j.getPosicion())
-                            .append(" (").append(j.getEdad()).append(" años) ").append(String.format("%.1f", j.getValoracion())).append("\n");
+                            .append(" (").append(j.getEdad()).append(" años) ").append(j.getValoracion()).append(" / 99").append("\n");
                 }
                 detalleText.setText(sb.toString());
             } else detalleText.setText("");

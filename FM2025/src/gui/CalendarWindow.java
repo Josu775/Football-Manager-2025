@@ -1,30 +1,30 @@
 package gui;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
-
 import domain.Equipo;
 import domain.LeagueData;
 
+import javax.swing.*;
+import java.awt.*;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
- * CalendarWindow simplificada: muestra jornadas y rivales para el equipo seleccionado.
- * (Se ha eliminado la simulación masiva y la clasificación).
+ * CalendarWindow interactivo: muestra jornada actual con rival, estadio, hora, local/visitante y botones siguiente/anterior.
  */
 public class CalendarWindow extends JFrame {
 
     private final Equipo equipo;
-    private final List<Equipo> allTeams;
-    private DefaultTableModel model;
+    private final List<MatchInfo> jornadas;
+    private int jornadaActual = 1;
+    private JLabel lblInfo;
 
     public CalendarWindow(JFrame parent, Equipo equipo) {
         super("Calendario - " + equipo.getNombre());
         this.equipo = equipo;
-        this.allTeams = LeagueData.getLaLiga20(); // lista central
-        setSize(800, 520);
+        this.jornadas = generarJornadas();
+        setSize(650, 400);
         setLocationRelativeTo(parent);
         init();
         setVisible(true);
@@ -32,79 +32,73 @@ public class CalendarWindow extends JFrame {
 
     private void init() {
         setLayout(new BorderLayout());
+        lblInfo = new JLabel("", SwingConstants.CENTER);
+        lblInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblInfo.setVerticalAlignment(SwingConstants.CENTER);
 
-        model = new DefaultTableModel(new String[]{"Jornada", "Rival", "Local/Visitante"}, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
-        };
-        JTable table = new JTable(model);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        JPanel center = new JPanel(new BorderLayout());
+        center.add(lblInfo, BorderLayout.CENTER);
+        add(center, BorderLayout.CENTER);
 
-        // Generar fixture round-robin (ida y vuelta) y mostrar sólo las filas del equipo seleccionado
-        List<Equipo> equipos = new ArrayList<>(allTeams);
-        if (equipos.size() % 2 != 0) equipos.add(null);
-        int n = equipos.size();
-        List<Equipo> rot = new ArrayList<>(equipos);
+        JPanel botones = new JPanel();
+        JButton btnPrev = new JButton("← Jornada anterior");
+        JButton btnNext = new JButton("Siguiente jornada →");
+        botones.add(btnPrev);
+        botones.add(btnNext);
+        add(botones, BorderLayout.SOUTH);
 
-        // rondas ida
-        List<List<String>> rounds = new ArrayList<>();
-        for (int round = 0; round < n - 1; round++) {
-            List<String> pairings = new ArrayList<>();
-            for (int i = 0; i < n / 2; i++) {
-                Equipo a = rot.get(i);
-                Equipo b = rot.get(n - 1 - i);
-                if (a != null && b != null) {
-                    pairings.add(a.getNombre() + " vs " + b.getNombre());
-                }
-            }
-            rounds.add(pairings);
-            // rotación
-            List<Equipo> next = new ArrayList<>();
-            next.add(rot.get(0));
-            next.add(rot.get(n - 1));
-            for (int i = 1; i < n - 1; i++) next.add(rot.get(i));
-            rot = next;
+        btnPrev.addActionListener(e -> {
+            jornadaActual = (jornadaActual == 1) ? 38 : jornadaActual - 1;
+            actualizarVista();
+        });
+
+        btnNext.addActionListener(e -> {
+            jornadaActual = (jornadaActual == 38) ? 1 : jornadaActual + 1;
+            actualizarVista();
+        });
+
+        actualizarVista();
+    }
+
+    private void actualizarVista() {
+        MatchInfo m = jornadas.get(jornadaActual - 1);
+        String html = "<html><div style='text-align:center;'>"
+                + "<h2>Jornada " + jornadaActual + "</h2>"
+                + "<b>Rival:</b> " + m.rival + "<br>"
+                + "<b>Estadio:</b> " + m.estadio + "<br>"
+                + "<b>Hora:</b> " + m.hora + "<br>"
+                + "<b>Posición rival:</b> " + m.posicion + "<br>"
+                + "<b>Condición:</b> " + (m.local ? "Local" : "Visitante")
+                + "</div></html>";
+        lblInfo.setText(html);
+    }
+
+    private List<MatchInfo> generarJornadas() {
+        List<MatchInfo> lista = new ArrayList<>();
+        List<Equipo> equipos = LeagueData.getLaLiga20();
+        equipos.removeIf(e -> e.getNombre().equals(equipo.getNombre()));
+        Random rnd = new Random();
+
+        for (int i = 1; i <= 38; i++) {
+            Equipo rival = equipos.get(rnd.nextInt(equipos.size()));
+            boolean local = rnd.nextBoolean();
+            String estadio = local ? equipo.getEstadio() : rival.getEstadio();
+            String hora = LocalTime.of(13 + rnd.nextInt(6), 0).toString() + "h";
+            int pos = 1 + rnd.nextInt(20);
+            lista.add(new MatchInfo(i, rival.getNombre(), estadio, hora, pos, local));
         }
+        return lista;
+    }
 
-        // construir ida + vuelta
-        List<List<String>> allRounds = new ArrayList<>();
-        allRounds.addAll(rounds);
-        for (List<String> r : rounds) {
-            List<String> swapped = new ArrayList<>();
-            for (String s : r) {
-                String[] parts = s.split(" vs ");
-                if (parts.length == 2) swapped.add(parts[1] + " vs " + parts[0]);
-            }
-            allRounds.add(swapped);
+    private static class MatchInfo {
+        int jornada;
+        String rival;
+        String estadio;
+        String hora;
+        int posicion;
+        boolean local;
+        MatchInfo(int j, String r, String e, String h, int p, boolean l) {
+            jornada = j; rival = r; estadio = e; hora = h; posicion = p; local = l;
         }
-
-        // rellenar tabla con jornadas del equipo
-        model.setRowCount(0);
-        int jornada = 1;
-        for (List<String> r : allRounds) {
-            String rival = "";
-            String localOrAway = "";
-            for (String p : r) {
-                if (p.contains(equipo.getNombre())) {
-                    String[] parts = p.split(" vs ");
-                    if (parts[0].equals(equipo.getNombre())) {
-                        rival = parts[1];
-                        localOrAway = "Local";
-                    } else {
-                        rival = parts[0];
-                        localOrAway = "Visitante";
-                    }
-                    break;
-                }
-            }
-            model.addRow(new Object[]{jornada, rival, localOrAway});
-            jornada++;
-        }
-
-        JPanel south = new JPanel();
-        JButton btnClose = new JButton("Cerrar");
-        south.add(btnClose);
-        add(south, BorderLayout.SOUTH);
-
-        btnClose.addActionListener(e -> dispose());
     }
 }
