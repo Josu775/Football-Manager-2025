@@ -1,16 +1,18 @@
 package gui;
 
 import domain.Equipo;
+import domain.LeagueManager;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class VentanaEquipos extends JFrame {
-
     private DefaultListModel<Equipo> model = new DefaultListModel<>();
+    private LeagueManager manager;
 
-    public VentanaEquipos(JFrame parent) {
-        setTitle("Gestión de Equipos");
+    public VentanaEquipos(JFrame parent, LeagueManager manager) {
+        super("Gestión de Equipos");
+        this.manager = manager;
         setSize(500, 400);
         setLocationRelativeTo(parent);
         initComponents();
@@ -32,21 +34,27 @@ public class VentanaEquipos extends JFrame {
 
         add(p);
 
-        // Datos de ejemplo
-        model.addElement(new Equipo("Real Ejemplo", "Ciudad A"));
-        model.addElement(new Equipo("Club Demo", "Ciudad B"));
+        // cargar datos desde manager
+        model.clear();
+        for (Equipo e : manager.getEquipos()) model.addElement(e);
 
         add.addActionListener(e -> {
             String nombre = JOptionPane.showInputDialog(this, "Nombre del equipo:");
             if (nombre != null && !nombre.trim().isEmpty()) {
-                model.addElement(new Equipo(nombre.trim(), "Sin sede"));
+                Equipo nuevo = new Equipo(nombre.trim(), "Sin sede");
+                manager.addEquipo(nuevo);
+                model.addElement(nuevo);
             }
         });
 
         borrar.addActionListener(e -> {
             int idx = lista.getSelectedIndex();
-            if (idx >= 0) model.remove(idx);
-            else JOptionPane.showMessageDialog(this, "Selecciona un equipo primero.");
+            if (idx >= 0) {
+                Equipo sel = model.get(idx);
+                model.remove(idx);
+                // opcional: remover del manager (implementa método si lo necesitas)
+                manager.getEquipos().remove(sel);
+            } else JOptionPane.showMessageDialog(this, "Selecciona un equipo primero.");
         });
     }
 }

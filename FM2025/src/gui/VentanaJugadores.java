@@ -1,17 +1,17 @@
 package gui;
 
 import domain.Jugador;
+import domain.LeagueManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class VentanaJugadores extends JFrame {
-
     private DefaultTableModel tableModel;
 
-    public VentanaJugadores(JFrame parent) {
-        setTitle("Gestión de Jugadores");
+    public VentanaJugadores(JFrame parent, LeagueManager manager) {
+        super("Gestión de Jugadores");
         setSize(700, 400);
         setLocationRelativeTo(parent);
         initComponents();
@@ -22,9 +22,7 @@ public class VentanaJugadores extends JFrame {
         String[] cols = {"Nombre", "Edad", "Posición"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // por ahora no editable
-            }
+            public boolean isCellEditable(int row, int column) { return false; }
         };
         JTable table = new JTable(tableModel);
         JScrollPane sp = new JScrollPane(table);
@@ -38,7 +36,7 @@ public class VentanaJugadores extends JFrame {
         add(sp, BorderLayout.CENTER);
         add(botones, BorderLayout.SOUTH);
 
-        // Datos de ejemplo
+        // datos de ejemplo
         tableModel.addRow(new Object[]{"Juan Pérez", 24, "Delantero"});
         tableModel.addRow(new Object[]{"María Díaz", 22, "Centrocampista"});
 
@@ -46,11 +44,7 @@ public class VentanaJugadores extends JFrame {
             JTextField nombre = new JTextField();
             JTextField edad = new JTextField();
             JTextField pos = new JTextField();
-            Object[] message = {
-                    "Nombre:", nombre,
-                    "Edad:", edad,
-                    "Posición:", pos
-            };
+            Object[] message = {"Nombre:", nombre, "Edad:", edad, "Posición:", pos};
             int option = JOptionPane.showConfirmDialog(this, message, "Nuevo jugador", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 try {
