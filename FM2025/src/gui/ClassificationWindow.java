@@ -22,16 +22,16 @@ public class ClassificationWindow extends JFrame {
     private void init() {
         List<Equipo> equipos = LeagueData.getLaLiga20();
 
-        // Ordenamos por valoración descendente como proxy de la clasificación
+        // Orden por valoración descendente (proxy)
         equipos.sort(Comparator.comparingDouble(Equipo::getValoracion).reversed());
 
-        String[] cols = {"Pos", "Equipo", "Ciudad", "Valoración"};
+        String[] cols = {"Pos", "Equipo", "Puntos", "GF", "PJ"};
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
         int pos = 1;
         for (Equipo e : equipos) {
-            model.addRow(new Object[]{pos++, e.getNombre(), e.getCiudad(), String.format("%.1f", e.getValoracion())});
+            model.addRow(new Object[]{pos++, e.getNombre(), 0, 0, 0}); // PJ = 0, Pts=0, GF=0
         }
 
         JTable table = new JTable(model);

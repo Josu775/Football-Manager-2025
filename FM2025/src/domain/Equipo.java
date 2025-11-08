@@ -9,14 +9,16 @@ public class Equipo {
     private String estadio;
     private String formacion;
     private double valoracion; // 0..5
+    private double budget; // presupuesto para fichajes
     private List<Jugador> onceTitular = new ArrayList<>();
 
-    public Equipo(String nombre, String ciudad, String estadio, String formacion, double valoracion) {
+    public Equipo(String nombre, String ciudad, String estadio, String formacion, double valoracion, double budget) {
         this.nombre = nombre;
         this.ciudad = ciudad;
         this.estadio = estadio;
         this.formacion = formacion;
-        this.valoracion = valoracion;
+        this.valoracion = Math.round(Math.max(1.0, Math.min(5.0, valoracion)) * 10.0) / 10.0;
+        this.budget = budget;
     }
 
     public String getNombre() { return nombre; }
@@ -25,10 +27,12 @@ public class Equipo {
     public String getFormacion() { return formacion; }
     public void setFormacion(String formacion) { this.formacion = formacion; }
     public double getValoracion() { return valoracion; }
-
     public void setValoracion(double valoracion) {
         this.valoracion = Math.round(Math.max(1.0, Math.min(5.0, valoracion)) * 10.0) / 10.0;
     }
+
+    public double getBudget() { return budget; }
+    public void setBudget(double budget) { this.budget = budget; }
 
     public List<Jugador> getOnceTitular() { return onceTitular; }
 
