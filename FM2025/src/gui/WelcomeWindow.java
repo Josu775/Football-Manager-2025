@@ -22,7 +22,7 @@ public class WelcomeWindow extends JFrame {
         title.setFont(new Font("Arial", Font.BOLD, 20));
         p.add(title, BorderLayout.NORTH);
 
-        JTextArea info = new JTextArea("Aquí comienza tu aventura");
+        JTextArea info = new JTextArea("Entrena un equipo. Alcanza la gloria");
         info.setEditable(false);
         info.setBackground(getBackground());
         info.setFont(new Font("Arial", Font.PLAIN, 14));
